@@ -1,132 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>NutriTrack Pro</title>
 
   <!-- iOS PWA hooks -->
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  <meta name="apple-mobile-web-app-title" content="NutriTrack Pro" />
-  <link rel="manifest" href="manifest.json" />
-  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="NutriTrack Pro">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="manifest" href="manifest.json">
 
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-<div class="app-container">
+<div class="app">
 
-  <!-- ============ DASHBOARD ============ -->
-  <div id="dashboard" class="screen active">
+  <!-- DASHBOARD -->
+  <section id="dashboard" class="screen active">
     <header class="greeting">
-      <h2>Hello!</h2><p id="today-date"></p>
+      <h2>Hello!</h2>
+      <p id="today-date"></p>
     </header>
 
-    <section id="rings">
+    <div class="ring-wrap">
       <canvas id="kcalRing" width="170" height="170"></canvas>
-      <div class="ring-label" id="kcalLabel"></div>
-    </section>
+      <div id="kcalLabel" class="ring-label"></div>
+    </div>
 
-    <section id="macro-bars">
-      <h3>Macros (g)</h3>
-      <div class="bar" id="protBar"></div>
-      <div class="bar" id="carbBar"></div>
-      <div class="bar" id="fatBar"></div>
-      <div class="bar" id="fibBar"></div>
-    </section>
-  </div>
+    <h3>Macros (g)</h3>
+    <div id="protBar" class="bar"></div>
+    <div id="carbBar" class="bar"></div>
+    <div id="fatBar"  class="bar"></div>
+    <div id="fibBar"  class="bar"></div>
+  </section>
 
-  <!-- ============ FOOD LOG ============ -->
-  <div id="food-log" class="screen">
+  <!-- FOOD LOG -->
+  <section id="food-log" class="screen">
     <h2>Food Log (Today)</h2>
-    <ul id="diaryUL" class="diary-list"></ul>
-    <button id="open-add" class="fab">＋</button>
-  </div>
+    <ul id="diaryUL" class="diary"></ul>
+    <button id="open-add" class="fab">+</button>
+  </section>
 
-  <!-- ============ ADD FOOD MODAL ============ -->
-  <div id="add-modal" class="modal hidden">
-   <div class="modal-content">
-    <span id="add-close" class="close">×</span>
-    <h3 id="add-title">Add Food</h3>
-    <input id="food-name" placeholder="Food name (search or custom)" />
-    <input id="serv-qty" type="number" value="100" /> 
-    <select id="serv-unit">
-      <option value="g">g</option><option value="ml">ml</option>
-      <option value="cup">cup</option><option value="tbsp">tbsp</option>
-      <option value="pcs">pcs</option>
+  <!-- PROFILE -->
+  <section id="profile" class="screen">
+    <h2>My Profile</h2>
+    <input id="p-name"   placeholder="Name">
+    <select id="p-gender"><option value="male">Male</option><option value="female">Female</option></select>
+    <input id="p-age"    type="number" placeholder="Age (y)">
+    <input id="p-weight" type="number" placeholder="Weight (kg)">
+    <input id="p-height" type="number" placeholder="Height (cm)">
+
+    <h3>Goal</h3>
+    <select id="p-goal-type">
+      <option value="maintain">Maintain</option>
+      <option value="loss">Lose weight</option>
+      <option value="gain">Gain muscle</option>
     </select>
 
-    <select id="meal-sel">
-      <option value="breakfast">Breakfast</option>
-      <option value="lunch">Lunch</option>
-      <option value="dinner">Dinner</option>
-      <option value="snack">Snack</option>
-    </select>
+    <div id="p-goal-extra" class="hidden">
+      <input id="p-delta" type="number" placeholder="Kgs to change">
+      <input id="p-weeks" type="number" placeholder="Weeks">
+    </div>
 
-    <button id="save-food" class="primary-btn">Save Food</button>
-   </div>
+    <button id="p-save" class="btn">Save & Calculate</button>
+    <p id="p-msg" class="hint"></p>
+  </section>
+
+  <!-- ADD FOOD MODAL -->
+  <div id="addModal" class="modal hidden">
+    <div class="modal-box">
+      <span id="addClose" class="close">×</span>
+      <h3>Add Food</h3>
+      <input id="food-name" placeholder="Food name (rice, egg…)">
+      <input id="serv-qty" type="number" value="100">
+      <select id="serv-unit">
+        <option>g</option><option>ml</option><option>cup</option>
+        <option>tbsp</option><option>pcs</option>
+      </select>
+      <select id="meal-sel">
+        <option>breakfast</option><option>lunch</option>
+        <option>dinner</option><option>snack</option>
+      </select>
+      <button id="saveFood" class="btn">Save</button>
+    </div>
   </div>
 
-  <!-- ============ FOOD DETAIL ============ -->
-  <div id="food-modal" class="modal hidden">
-   <div class="modal-content wide">
-    <span id="modal-close" class="close">×</span>
-    <h3 id="modal-title"></h3>
-    <p id="modal-serv"></p>
-    <h4>Macronutrients</h4>
-    <ul id="modal-macros"></ul>
-    <h4>Micronutrients</h4>
-    <ul id="modal-micros" class="scroll-box"></ul>
-   </div>
+  <!-- FOOD DETAIL MODAL -->
+  <div id="foodModal" class="modal hidden">
+    <div class="modal-box wide">
+      <span id="foodClose" class="close">×</span>
+      <h3 id="fTitle"></h3>
+      <p id="fServ"></p>
+      <h4>Macros</h4><ul id="fMacros"></ul>
+      <h4>Micros</h4><ul id="fMicros" class="scroll"></ul>
+    </div>
   </div>
 
-  <!-- ============ PROFILE ============ -->
-  <div id="profile" class="screen">
-   <h2>My Profile</h2>
-   <input id="p-name" placeholder="Name" />
-   <select id="p-gender">
-     <option value="male">Male</option><option value="female">Female</option>
-   </select>
-   <input id="p-age" type="number" placeholder="Age (y)" />
-   <input id="p-weight" type="number" placeholder="Weight (kg)" />
-   <input id="p-height" type="number" placeholder="Height (cm)" />
-
-   <h3>Goal</h3>
-   <select id="p-goal-type">
-     <option value="maintain">Maintain</option>
-     <option value="loss">Lose weight</option>
-     <option value="gain">Gain muscle</option>
-   </select>
-
-   <div id="p-goal-extra" class="hidden">
-     <input id="p-delta" type="number" placeholder="Kgs to change" />
-     <input id="p-weeks" type="number" placeholder="Weeks" />
-   </div>
-
-   <button id="p-save" class="primary-btn">Save & Calculate</button>
-   <p id="p-msg" class="hint"></p>
-  </div>
-
-</div> <!-- /app-container -->
+</div><!--/app-->
 
 <footer>
- <nav>
-  <button data-target="dashboard">🏠</button>
-  <button data-target="food-log">📒</button>
-  <button data-target="profile">👤</button>
- </nav>
+  <nav>
+    <button data-target="dashboard">🏠</button>
+    <button data-target="food-log">📒</button>
+    <button data-target="profile">👤</button>
+  </nav>
 </footer>
 
 <script src="app.js"></script>
-<!-- service-worker registration -->
 <script>
- if ('serviceWorker' in navigator){
-   navigator.serviceWorker.register('/sw.js');
- }
- document.getElementById('today-date').textContent =
-   new Date().toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'});
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
+  document.getElementById('today-date').textContent =
+    new Date().toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'});
 </script>
 </body>
 </html>
