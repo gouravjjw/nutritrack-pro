@@ -41,6 +41,30 @@ if ('serviceWorker' in navigator) {
                 <div class="profile-pic"></div>
             </div>
 
+			<div id="profile" class="screen">
+  <h2>My Profile</h2>
+  <!-- BASIC DATA -->
+  <input id="p-name" placeholder="Name">
+  <select id="p-gender"><option value="male">Male</option><option value="female">Female</option></select>
+  <input id="p-age" type="number" placeholder="Age (y)">
+  <input id="p-weight" type="number" placeholder="Weight (kg)">
+  <input id="p-height" type="number" placeholder="Height (cm)">
+  <!-- GOAL SECTION -->
+  <h3>Goal</h3>
+  <select id="p-goal-type">
+    <option value="maintain">Maintain</option>
+    <option value="loss">Lose weight</option>
+    <option value="gain">Gain muscle</option>
+  </select>
+  <div id="p-goal-extra" class="hidden">
+    <input id="p-delta" type="number" placeholder="Kgs to change">
+    <input id="p-weeks" type="number" placeholder="Weeks">
+  </div>
+  <button id="p-save" class="primary-btn">Save & Calculate</button>
+  <p id="p-msg"></p>
+</div>
+
+
             <div class="calorie-progress">
                 <div class="progress-circle">
                     <canvas id="calorieChart" width="200" height="200"></canvas>
