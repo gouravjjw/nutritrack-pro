@@ -944,3 +944,36 @@ function loadInitialData() {
     
     console.log('App initialized with AI capabilities');
 }
+
+
+/* ========= tiny helpers ========= */
+const $ = id => document.getElementById(id);
+
+function switchScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  $(id).classList.add('active');
+}
+document.querySelectorAll('footer button').forEach(b=>{
+  b.onclick = () => switchScreen(b.dataset.target);
+});
+
+/* ========= PROFILE STORAGE (new) ========= */
+const getProf = () => JSON.parse(localStorage.getItem('nt_profile')||'{}');
+const setProf = p  => localStorage.setItem('nt_profile',JSON.stringify(p));
+
+$('p-save').onclick = ()=>{
+  const prof = {
+    name  : $('p-name').value.trim(),
+    gender: $('p-gender').value,
+    age   : +$('p-age').value,
+    weight: +$('p-weight').value,
+    height: +$('p-height').value
+  };
+  setProf(prof);
+  $('p-msg').textContent = '✓ Saved';
+  setTimeout(()=>$('p-msg').textContent='',2000);
+};
+
+/* ========= BASELINE FOOD-LOG CODE ========= */
+/* keep your original diary / add-food logic here */
+/* nothing in that part was changed by Step 1 */
