@@ -1,6 +1,39 @@
 // NutriTrack Pro - Enhanced JavaScript with AI Functionality
 
 // Enhanced Food Database with AI-retrieved items
+
+const defaultProfile = {
+  name:'', gender:'male', age:30, weight:70, height:170,
+  goal:{type:'maintain', deltaKg:0, weeks:0},
+  macros:{protein:0, carbs:0, fat:0, fiber:0},
+  micros:{}, calorieGoal:2000
+};
+function getProfile(){ return JSON.parse(localStorage.getItem('nt_profile')||JSON.stringify(defaultProfile)); }
+function setProfile(p){ localStorage.setItem('nt_profile',JSON.stringify(p)); }
+
+function kcalMaintenance(p){           // Mifflin-St Jeor
+  const s = p.gender==='male'?5:-161;
+  return Math.round( (10*p.weight)+(6.25*p.height)-(5*p.age)+s );
+}
+function applyGoal(p){
+  const kcal = kcalMaintenance(p);
+  if(p.goal.type==='loss'){
+     const deficitPerKg = 7700;
+     const kcalDef = (p.goal.deltaKg*deficitPerKg)/(p.goal.weeks*7);
+     p.calorieGoal = kcal - kcalDef;
+  }else if(p.goal.type==='gain'){
+     const surplus = 250 * p.goal.deltaKg; // simple model
+     p.calorieGoal = kcal + surplus;
+  }else p.calorieGoal = kcal;
+  // Split macros: 25 % protein | 45 % carb | 30 % fat
+  p.macros = {
+    protein : +(p.calorieGoal*0.25/4 ).toFixed(0),
+    carbs   : +(p.calorieGoal*0.45/4 ).toFixed(0),
+    fat     : +(p.calorieGoal*0.30/9 ).toFixed(0),
+    fiber   : 30
+  };
+}
+
 const foodDatabase = {
     "rice_basmati_cooked": {
         "name": "Basmati Rice (Cooked)",
