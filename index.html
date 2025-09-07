@@ -1,118 +1,813 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>NutriTrack Pro</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	    <title>NutriTrack Pro - AI Powered</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <!-- iOS PWA hooks -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="NutriTrack Pro">
-  <link rel="apple-touch-icon" href="icons/icon-192.png">
-  <link rel="manifest" href="manifest.json">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="NutriTrack Pro">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
 
-  <link rel="stylesheet" href="style.css">
+<!-- Register Service Worker -->
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then((registration) => {
+        console.log('SW registered: ', registration);
+      })
+      .catch((registrationError) => {
+        console.log('SW registration failed: ', registrationError);
+      });
+  });
+}
+</script>
+
 </head>
 <body>
-<div class="app">
+    <div class="app-container">
+        <!-- Dashboard Screen -->
+        <div id="dashboard" class="screen active">
+            <div class="header">
+                <div class="greeting">
+                    <h2>Good Afternoon, Alex!</h2>
+                    <p>Sunday, September 07, 2025</p>
+                </div>
+                <div class="profile-pic"></div>
+            </div>
 
-  <!-- DASHBOARD -->
-  <section id="dashboard" class="screen active">
-    <header class="greeting">
-      <h2>Hello!</h2>
-      <p id="today-date"></p>
-    </header>
+            <div class="calorie-progress">
+                <div class="progress-circle">
+                    <canvas id="calorieChart" width="200" height="200"></canvas>
+                    <div class="progress-text">
+                        <span class="current">1,240</span>
+                        <span class="total">/ 2,000</span>
+                        <span class="label">calories</span>
+                    </div>
+                </div>
+            </div>
 
-    <div class="ring-wrap">
-      <canvas id="kcalRing" width="170" height="170"></canvas>
-      <div id="kcalLabel" class="ring-label"></div>
+            <div class="macros-section">
+                <h3>Macronutrients</h3>
+                <div class="macro-bars">
+                    <div class="macro-item">
+                        <div class="macro-info">
+                            <span class="macro-name">Protein</span>
+                            <span class="macro-value">45g / 125g</span>
+                        </div>
+                        <div class="macro-bar">
+                            <div class="macro-fill" style="width: 36%"></div>
+                        </div>
+                    </div>
+                    <div class="macro-item">
+                        <div class="macro-info">
+                            <span class="macro-name">Carbs</span>
+                            <span class="macro-value">156g / 250g</span>
+                        </div>
+                        <div class="macro-bar">
+                            <div class="macro-fill" style="width: 62%"></div>
+                        </div>
+                    </div>
+                    <div class="macro-item">
+                        <div class="macro-info">
+                            <span class="macro-name">Fat</span>
+                            <span class="macro-value">42g / 67g</span>
+                        </div>
+                        <div class="macro-bar">
+                            <div class="macro-fill" style="width: 63%"></div>
+                        </div>
+                    </div>
+                    <div class="macro-item">
+                        <div class="macro-info">
+                            <span class="macro-name">Fiber</span>
+                            <span class="macro-value">12g / 25g</span>
+                        </div>
+                        <div class="macro-bar">
+                            <div class="macro-fill" style="width: 48%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="micros-section">
+                <h3>Key Micronutrients</h3>
+                <div class="micro-grid">
+                    <div class="micro-item status--success">
+                        <div class="micro-name">Vitamin C</div>
+                        <div class="micro-value">78%</div>
+                    </div>
+                    <div class="micro-item status--warning">
+                        <div class="micro-name">Iron</div>
+                        <div class="micro-value">34%</div>
+                    </div>
+                    <div class="micro-item status--success">
+                        <div class="micro-name">Calcium</div>
+                        <div class="micro-value">92%</div>
+                    </div>
+                    <div class="micro-item status--error">
+                        <div class="micro-name">Vitamin D</div>
+                        <div class="micro-value">12%</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="water-section">
+                <h3>Water Intake</h3>
+                <div class="water-glasses">
+                    <div class="glass filled"></div>
+                    <div class="glass filled"></div>
+                    <div class="glass filled"></div>
+                    <div class="glass"></div>
+                    <div class="glass"></div>
+                    <div class="glass"></div>
+                    <div class="glass"></div>
+                    <div class="glass"></div>
+                </div>
+                <p>3 / 8 glasses today</p>
+            </div>
+
+            <div class="quick-add">
+                <h3>Recently Logged</h3>
+                <div class="recent-foods">
+                    <div class="recent-item">
+                        <div class="food-icon">🍚</div>
+                        <span>Basmati Rice</span>
+                        <button class="btn btn--sm btn--outline">Add</button>
+                    </div>
+                    <div class="recent-item">
+                        <div class="food-icon">🥤</div>
+                        <span>Whey Protein</span>
+                        <span class="ai-badge">AI</span>
+                        <button class="btn btn--sm btn--outline">Add</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Food Log Screen -->
+        <div id="food-log" class="screen">
+            <div class="header">
+                <h2>Food Log</h2>
+                <div class="date-selector">
+                    <button class="btn btn--sm btn--outline">&lt;</button>
+                    <span>Today</span>
+                    <button class="btn btn--sm btn--outline">&gt;</button>
+                </div>
+            </div>
+
+            <div class="search-bar">
+                <input type="text" placeholder="Search foods..." class="form-control">
+            </div>
+
+            <div class="meals-container">
+                <div class="meal-section">
+                    <div class="meal-header">
+                        <h3>Breakfast</h3>
+                        <span class="meal-calories">435 cal</span>
+                        <button class="add-meal-btn" data-meal="breakfast">+</button>
+                    </div>
+                    <div class="meal-items">
+                        <div class="food-item">
+                            <div class="food-info">
+                                <div class="food-icon">🥚</div>
+                                <div class="food-details">
+                                    <span class="food-name">Boiled Egg</span>
+                                    <span class="food-quantity">2 medium</span>
+                                </div>
+                            </div>
+                            <span class="food-calories">156 cal</span>
+                        </div>
+                        <div class="food-item">
+                            <div class="food-info">
+                                <div class="food-icon">🥤</div>
+                                <div class="food-details">
+                                    <span class="food-name">The Whole Truth Whey Concentrate</span>
+                                    <span class="food-quantity">1 scoop</span>
+                                    <span class="ai-badge">AI</span>
+                                </div>
+                            </div>
+                            <span class="food-calories">115 cal</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="meal-section">
+                    <div class="meal-header">
+                        <h3>Lunch</h3>
+                        <span class="meal-calories">580 cal</span>
+                        <button class="add-meal-btn" data-meal="lunch">+</button>
+                    </div>
+                    <div class="meal-items">
+                        <div class="food-item">
+                            <div class="food-info">
+                                <div class="food-icon">🍚</div>
+                                <div class="food-details">
+                                    <span class="food-name">Basmati Rice</span>
+                                    <span class="food-quantity">150g cooked</span>
+                                </div>
+                            </div>
+                            <span class="food-calories">182 cal</span>
+                        </div>
+                        <div class="food-item">
+                            <div class="food-info">
+                                <div class="food-icon">🥘</div>
+                                <div class="food-details">
+                                    <span class="food-name">Moong Dal</span>
+                                    <span class="food-quantity">100g cooked</span>
+                                </div>
+                            </div>
+                            <span class="food-calories">105 cal</span>
+                        </div>
+                        <div class="food-item">
+                            <div class="food-info">
+                                <div class="food-icon">🥬</div>
+                                <div class="food-details">
+                                    <span class="food-name">Spinach Curry</span>
+                                    <span class="food-quantity">100g</span>
+                                </div>
+                            </div>
+                            <span class="food-calories">45 cal</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="meal-section">
+                    <div class="meal-header">
+                        <h3>Dinner</h3>
+                        <span class="meal-calories">225 cal</span>
+                        <button class="add-meal-btn" data-meal="dinner">+</button>
+                    </div>
+                    <div class="meal-items">
+                        <div class="food-item">
+                            <div class="food-info">
+                                <div class="food-icon">🍗</div>
+                                <div class="food-details">
+                                    <span class="food-name">Grilled Chicken</span>
+                                    <span class="food-quantity">100g</span>
+                                </div>
+                            </div>
+                            <span class="food-calories">165 cal</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="meal-section">
+                    <div class="meal-header">
+                        <h3>Snacks</h3>
+                        <span class="meal-calories">164 cal</span>
+                        <button class="add-meal-btn" data-meal="snacks">+</button>
+                    </div>
+                    <div class="meal-items">
+                        <div class="food-item">
+                            <div class="food-info">
+                                <div class="food-icon">🥜</div>
+                                <div class="food-details">
+                                    <span class="food-name">Almonds</span>
+                                    <span class="food-quantity">28g (24 nuts)</span>
+                                </div>
+                            </div>
+                            <span class="food-calories">164 cal</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Food Screen -->
+        <div id="add-food" class="screen">
+            <div class="header">
+                <h2>Add Food</h2>
+            </div>
+
+            <div class="search-section">
+                <div class="search-mode-toggle">
+                    <button class="mode-btn active" data-mode="database">
+                        <span class="mode-icon">📊</span>
+                        Database Search
+                    </button>
+                    <button class="mode-btn" data-mode="ai">
+                        <span class="mode-icon">🤖</span>
+                        AI Search
+                    </button>
+                </div>
+                
+                <div class="search-bar">
+                    <input type="text" id="food-search" placeholder="Search for foods..." class="form-control">
+                    <button id="ai-search-btn" class="btn btn--primary hidden">Search with AI</button>
+                </div>
+                
+                <div class="food-categories">
+                    <button class="category-chip active" data-category="all">All</button>
+                    <button class="category-chip" data-category="Grains & Cereals">Grains</button>
+                    <button class="category-chip" data-category="Vegetables">Vegetables</button>
+                    <button class="category-chip" data-category="Fruits">Fruits</button>
+                    <button class="category-chip" data-category="Meat & Poultry">Meat</button>
+                    <button class="category-chip" data-category="Dairy">Dairy</button>
+                    <button class="category-chip" data-category="Supplements">Supplements</button>
+                </div>
+            </div>
+
+            <div class="create-custom-section">
+                <button class="btn btn--secondary btn--full-width" id="create-custom-btn">
+                    + Create Custom Food
+                </button>
+            </div>
+
+            <div class="ai-loading hidden" id="ai-loading">
+                <div class="loading-spinner"></div>
+                <p>Searching with AI...</p>
+            </div>
+
+            <div class="ai-search-tips hidden" id="ai-search-tips">
+                <h4>Search Tips</h4>
+                <p>Try searches like:</p>
+                <ul>
+                    <li>"The Whole Truth Whey Concentrate"</li>
+                    <li>"Optimum Nutrition Gold Standard Whey"</li>
+                    <li>"Hershey's Dark Chocolate 70g"</li>
+                    <li>"Coca Cola 330ml can"</li>
+                </ul>
+            </div>
+
+            <div class="food-results" id="food-results">
+                <div class="food-result-item" data-food="rice_basmati_cooked">
+                    <div class="food-info">
+                        <div class="food-icon">🍚</div>
+                        <div class="food-details">
+                            <span class="food-name">Basmati Rice (Cooked)</span>
+                            <span class="food-category">Grains & Cereals</span>
+                        </div>
+                    </div>
+                    <span class="food-calories">121 cal/100g</span>
+                </div>
+                <div class="food-result-item" data-food="the_whole_truth_whey_concentrate">
+                    <div class="food-info">
+                        <div class="food-icon">🥤</div>
+                        <div class="food-details">
+                            <span class="food-name">The Whole Truth Whey Concentrate</span>
+                            <span class="food-category">Supplements</span>
+                            <span class="ai-badge">AI</span>
+                        </div>
+                    </div>
+                    <span class="food-calories">115 cal/30g</span>
+                </div>
+                <div class="food-result-item" data-food="chicken_breast_grilled">
+                    <div class="food-info">
+                        <div class="food-icon">🍗</div>
+                        <div class="food-details">
+                            <span class="food-name">Chicken Breast (Grilled)</span>
+                            <span class="food-category">Meat & Poultry</span>
+                        </div>
+                    </div>
+                    <span class="food-calories">165 cal/100g</span>
+                </div>
+                <div class="food-result-item" data-food="spinach_raw">
+                    <div class="food-info">
+                        <div class="food-icon">🥬</div>
+                        <div class="food-details">
+                            <span class="food-name">Spinach (Raw)</span>
+                            <span class="food-category">Vegetables</span>
+                        </div>
+                    </div>
+                    <span class="food-calories">23 cal/100g</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Search Screen -->
+        <div id="ai-search" class="screen">
+            <div class="header">
+                <h2>AI Food Search</h2>
+            </div>
+
+            <div class="ai-search-section">
+                <div class="search-bar">
+                    <input type="text" id="ai-food-search" placeholder="Search branded foods (e.g., 'The Whole Truth Whey Concentrate')" class="form-control">
+                    <button id="branded-search-btn" class="btn btn--primary">Search</button>
+                </div>
+
+                <div class="search-examples">
+                    <h4>Popular Searches</h4>
+                    <div class="example-chips">
+                        <button class="example-chip" data-search="Optimum Nutrition Gold Standard Whey">ON Gold Standard</button>
+                        <button class="example-chip" data-search="Hershey's Dark Chocolate">Hershey's Chocolate</button>
+                        <button class="example-chip" data-search="Coca Cola 330ml">Coca Cola</button>
+                        <button class="example-chip" data-search="Maggi 2 Minute Noodles">Maggi Noodles</button>
+                    </div>
+                </div>
+
+                <div class="recent-ai-searches" id="recent-searches">
+                    <h4>Recent Searches</h4>
+                    <div class="recent-list">
+                        <div class="recent-search-item">
+                            <span>The Whole Truth Whey Concentrate</span>
+                            <button class="btn btn--sm btn--outline">Search Again</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ai-loading hidden" id="ai-main-loading">
+                <div class="loading-spinner"></div>
+                <p>Fetching nutrition data from AI...</p>
+            </div>
+
+            <div class="ai-results" id="ai-results">
+                <!-- AI results will be populated here -->
+            </div>
+
+            <div class="api-status" id="api-status">
+                <div class="status-item">
+                    <span class="status-label">API Status:</span>
+                    <span class="status--success" id="api-connection-status">Connected</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Monthly Usage:</span>
+                    <span id="api-usage">12 / 1000 queries</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics Screen -->
+        <div id="analytics" class="screen">
+            <div class="header">
+                <h2>Analytics</h2>
+                <div class="period-selector">
+                    <button class="btn btn--sm btn--outline active">Week</button>
+                    <button class="btn btn--sm btn--outline">Month</button>
+                </div>
+            </div>
+
+            <div class="chart-section">
+                <h3>Calorie Intake Trend</h3>
+                <div class="chart-container" style="position: relative; height: 300px;">
+                    <canvas id="caloriesTrendChart"></canvas>
+                </div>
+            </div>
+
+            <div class="data-source-breakdown">
+                <h3>Data Sources</h3>
+                <div class="source-stats">
+                    <div class="source-item">
+                        <div class="source-icon">📊</div>
+                        <div class="source-info">
+                            <span class="source-name">Database Foods</span>
+                            <span class="source-count">85%</span>
+                        </div>
+                    </div>
+                    <div class="source-item">
+                        <div class="source-icon">🤖</div>
+                        <div class="source-info">
+                            <span class="source-name">AI Retrieved</span>
+                            <span class="source-count">15%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="nutrient-report">
+                <h3>Nutrient Report Card</h3>
+                <div class="report-grid">
+                    <div class="report-item status--success">
+                        <span class="report-grade">A</span>
+                        <span class="report-category">Vitamins</span>
+                    </div>
+                    <div class="report-item status--warning">
+                        <span class="report-grade">C</span>
+                        <span class="report-category">Minerals</span>
+                    </div>
+                    <div class="report-item status--success">
+                        <span class="report-grade">B+</span>
+                        <span class="report-category">Macros</span>
+                    </div>
+                    <div class="report-item status--error">
+                        <span class="report-grade">D</span>
+                        <span class="report-category">Hydration</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="micronutrient-adequacy">
+                <h3>Micronutrient Adequacy</h3>
+                <div class="adequacy-list">
+                    <div class="adequacy-item">
+                        <span class="nutrient-name">Vitamin C</span>
+                        <div class="adequacy-bar">
+                            <div class="adequacy-fill status--success" style="width: 125%"></div>
+                        </div>
+                        <span class="adequacy-percent">125%</span>
+                    </div>
+                    <div class="adequacy-item">
+                        <span class="nutrient-name">Iron</span>
+                        <div class="adequacy-bar">
+                            <div class="adequacy-fill status--warning" style="width: 67%"></div>
+                        </div>
+                        <span class="adequacy-percent">67%</span>
+                    </div>
+                    <div class="adequacy-item">
+                        <span class="nutrient-name">Calcium</span>
+                        <div class="adequacy-bar">
+                            <div class="adequacy-fill status--success" style="width: 89%"></div>
+                        </div>
+                        <span class="adequacy-percent">89%</span>
+                    </div>
+                    <div class="adequacy-item">
+                        <span class="nutrient-name">Vitamin D</span>
+                        <div class="adequacy-bar">
+                            <div class="adequacy-fill status--error" style="width: 32%"></div>
+                        </div>
+                        <span class="adequacy-percent">32%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Screen -->
+        <div id="profile" class="screen">
+            <div class="header">
+                <h2>Profile</h2>
+            </div>
+
+            <div class="profile-info">
+                <div class="profile-avatar"></div>
+                <h3>Alex Johnson</h3>
+                <p>29 years old • Male • Active</p>
+            </div>
+
+            <div class="goals-section">
+                <h3>Daily Goals</h3>
+                <div class="goal-item">
+                    <span class="goal-label">Calories</span>
+                    <span class="goal-value">2,000 cal</span>
+                </div>
+                <div class="goal-item">
+                    <span class="goal-label">Protein</span>
+                    <span class="goal-value">125g</span>
+                </div>
+                <div class="goal-item">
+                    <span class="goal-label">Carbs</span>
+                    <span class="goal-value">250g</span>
+                </div>
+                <div class="goal-item">
+                    <span class="goal-label">Fat</span>
+                    <span class="goal-value">67g</span>
+                </div>
+            </div>
+
+            <div class="api-settings-section">
+                <h3>AI Search Settings</h3>
+                <div class="setting-item">
+                    <span>Perplexity API Key</span>
+                    <input type="password" id="api-key-input" class="form-control" placeholder="Enter your API key">
+                </div>
+                <div class="setting-item">
+                    <span>Auto-save AI Results</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="auto-save-toggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <span>Confidence Threshold</span>
+                    <select class="form-control" id="confidence-select">
+                        <option value="low">Low (60%)</option>
+                        <option value="medium" selected>Medium (75%)</option>
+                        <option value="high">High (90%)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h3>General Settings</h3>
+                <div class="setting-item">
+                    <span>Units</span>
+                    <select class="form-control">
+                        <option>Metric</option>
+                        <option>Imperial</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <span>Activity Level</span>
+                    <select class="form-control">
+                        <option>Sedentary</option>
+                        <option>Lightly Active</option>
+                        <option selected>Moderately Active</option>
+                        <option>Very Active</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="export-section">
+                <button class="btn btn--primary btn--full-width">Export Data</button>
+            </div>
+        </div>
+
+        <!-- Food Detail Modal -->
+        <div id="food-detail-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="modal-food-name">Food Name</h3>
+                    <button class="modal-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="food-image">
+                        <div class="food-icon large" id="modal-food-icon">🍚</div>
+                        <div class="data-source-badge" id="modal-data-source">
+                            <span class="source-icon">📊</span>
+                            <span class="source-text">Database</span>
+                        </div>
+                    </div>
+                    
+                    <div class="serving-selector">
+                        <label>Serving Size:</label>
+                        <select id="serving-size" class="form-control">
+                            <option value="1">1 serving</option>
+                            <option value="0.5">1/2 serving</option>
+                            <option value="2">2 servings</option>
+                        </select>
+                    </div>
+
+                    <div class="confidence-indicator hidden" id="confidence-indicator">
+                        <div class="confidence-bar">
+                            <div class="confidence-fill" id="confidence-fill"></div>
+                        </div>
+                        <span class="confidence-text" id="confidence-text">AI Confidence: 85%</span>
+                    </div>
+
+                    <div class="nutrition-breakdown">
+                        <div class="nutrition-section">
+                            <h4>Macronutrients</h4>
+                            <div class="nutrition-grid">
+                                <div class="nutrition-item">
+                                    <span class="nutrient-name">Calories</span>
+                                    <span class="nutrient-value" id="modal-calories">0</span>
+                                </div>
+                                <div class="nutrition-item">
+                                    <span class="nutrient-name">Protein</span>
+                                    <span class="nutrient-value" id="modal-protein">0g</span>
+                                </div>
+                                <div class="nutrition-item">
+                                    <span class="nutrient-name">Carbs</span>
+                                    <span class="nutrient-value" id="modal-carbs">0g</span>
+                                </div>
+                                <div class="nutrition-item">
+                                    <span class="nutrient-name">Fat</span>
+                                    <span class="nutrient-value" id="modal-fat">0g</span>
+                                </div>
+                                <div class="nutrition-item">
+                                    <span class="nutrient-name">Fiber</span>
+                                    <span class="nutrient-value" id="modal-fiber">0g</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="nutrition-section">
+                            <h4>Vitamins</h4>
+                            <div class="micronutrient-list" id="vitamins-list">
+                                <!-- Vitamins will be populated by JavaScript -->
+                            </div>
+                        </div>
+
+                        <div class="nutrition-section">
+                            <h4>Minerals</h4>
+                            <div class="micronutrient-list" id="minerals-list">
+                                <!-- Minerals will be populated by JavaScript -->
+                            </div>
+                        </div>
+
+                        <div class="additional-info" id="additional-info">
+                            <!-- Additional info for AI-retrieved items -->
+                        </div>
+                    </div>
+
+                    <div class="meal-selection">
+                        <label>Add to:</label>
+                        <select id="meal-select" class="form-control">
+                            <option value="breakfast">Breakfast</option>
+                            <option value="lunch">Lunch</option>
+                            <option value="dinner">Dinner</option>
+                            <option value="snacks">Snacks</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn--outline" id="verify-data-btn">Verify Data</button>
+                    <button class="btn btn--primary" id="add-to-diary">Add to Diary</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Custom Food Modal -->
+        <div id="custom-food-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Create Custom Food</h3>
+                    <button class="modal-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form id="custom-food-form">
+                        <div class="form-group">
+                            <label class="form-label">Food Name</label>
+                            <input type="text" class="form-control" id="custom-name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Category</label>
+                            <select class="form-control" id="custom-category" required>
+                                <option value="">Select category</option>
+                                <option value="Grains & Cereals">Grains & Cereals</option>
+                                <option value="Vegetables">Vegetables</option>
+                                <option value="Fruits">Fruits</option>
+                                <option value="Meat & Poultry">Meat & Poultry</option>
+                                <option value="Dairy">Dairy</option>
+                                <option value="Pulses & Legumes">Pulses & Legumes</option>
+                                <option value="Nuts & Seeds">Nuts & Seeds</option>
+                                <option value="Supplements">Supplements</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Serving Size</label>
+                            <input type="text" class="form-control" id="custom-serving" placeholder="e.g., 100g, 1 cup" required>
+                        </div>
+
+                        <div class="nutrition-input-section">
+                            <h4>Macronutrients</h4>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Calories</label>
+                                    <input type="number" class="form-control" id="custom-calories" step="0.1" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Protein (g)</label>
+                                    <input type="number" class="form-control" id="custom-protein" step="0.1" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Carbs (g)</label>
+                                    <input type="number" class="form-control" id="custom-carbs" step="0.1" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Fat (g)</label>
+                                    <input type="number" class="form-control" id="custom-fat" step="0.1" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Fiber (g)</label>
+                                    <input type="number" class="form-control" id="custom-fiber" step="0.1">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Sugar (g)</label>
+                                    <input type="number" class="form-control" id="custom-sugar" step="0.1">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn--outline" id="cancel-custom">Cancel</button>
+                    <button type="submit" form="custom-food-form" class="btn btn--primary">Save Food</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <button class="nav-item active" data-screen="dashboard">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-label">Dashboard</span>
+            </button>
+            <button class="nav-item" data-screen="food-log">
+                <span class="nav-icon">📝</span>
+                <span class="nav-label">Food Log</span>
+            </button>
+            <button class="nav-item" data-screen="add-food">
+                <span class="nav-icon">➕</span>
+                <span class="nav-label">Add Food</span>
+            </button>
+            <button class="nav-item" data-screen="ai-search">
+                <span class="nav-icon">🤖</span>
+                <span class="nav-label">AI Search</span>
+            </button>
+            <button class="nav-item" data-screen="analytics">
+                <span class="nav-icon">📊</span>
+                <span class="nav-label">Analytics</span>
+            </button>
+            <button class="nav-item" data-screen="profile">
+                <span class="nav-icon">👤</span>
+                <span class="nav-label">Profile</span>
+            </button>
+        </nav>
     </div>
 
-    <h3>Macros (g)</h3>
-    <div id="protBar" class="bar"></div>
-    <div id="carbBar" class="bar"></div>
-    <div id="fatBar"  class="bar"></div>
-    <div id="fibBar"  class="bar"></div>
-  </section>
-
-  <!-- FOOD LOG -->
-  <section id="food-log" class="screen">
-    <h2>Food Log (Today)</h2>
-    <ul id="diaryUL" class="diary"></ul>
-    <button id="open-add" class="fab">+</button>
-  </section>
-
-  <!-- PROFILE -->
-  <section id="profile" class="screen">
-    <h2>My Profile</h2>
-    <input id="p-name"   placeholder="Name">
-    <select id="p-gender"><option value="male">Male</option><option value="female">Female</option></select>
-    <input id="p-age"    type="number" placeholder="Age (y)">
-    <input id="p-weight" type="number" placeholder="Weight (kg)">
-    <input id="p-height" type="number" placeholder="Height (cm)">
-
-    <h3>Goal</h3>
-    <select id="p-goal-type">
-      <option value="maintain">Maintain</option>
-      <option value="loss">Lose weight</option>
-      <option value="gain">Gain muscle</option>
-    </select>
-
-    <div id="p-goal-extra" class="hidden">
-      <input id="p-delta" type="number" placeholder="Kgs to change">
-      <input id="p-weeks" type="number" placeholder="Weeks">
-    </div>
-
-    <button id="p-save" class="btn">Save & Calculate</button>
-    <p id="p-msg" class="hint"></p>
-  </section>
-
-  <!-- ADD FOOD MODAL -->
-  <div id="addModal" class="modal hidden">
-    <div class="modal-box">
-      <span id="addClose" class="close">×</span>
-      <h3>Add Food</h3>
-      <input id="food-name" placeholder="Food name (rice, egg…)">
-      <input id="serv-qty" type="number" value="100">
-      <select id="serv-unit">
-        <option>g</option><option>ml</option><option>cup</option>
-        <option>tbsp</option><option>pcs</option>
-      </select>
-      <select id="meal-sel">
-        <option>breakfast</option><option>lunch</option>
-        <option>dinner</option><option>snack</option>
-      </select>
-      <button id="saveFood" class="btn">Save</button>
-    </div>
-  </div>
-
-  <!-- FOOD DETAIL MODAL -->
-  <div id="foodModal" class="modal hidden">
-    <div class="modal-box wide">
-      <span id="foodClose" class="close">×</span>
-      <h3 id="fTitle"></h3>
-      <p id="fServ"></p>
-      <h4>Macros</h4><ul id="fMacros"></ul>
-      <h4>Micros</h4><ul id="fMicros" class="scroll"></ul>
-    </div>
-  </div>
-
-</div><!--/app-->
-
-<footer>
-  <nav>
-    <button data-target="dashboard">🏠</button>
-    <button data-target="food-log">📒</button>
-    <button data-target="profile">👤</button>
-  </nav>
-</footer>
-
-<script src="app.js"></script>
-<script>
-  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
-  document.getElementById('today-date').textContent =
-    new Date().toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'});
-</script>
+    <script src="app.js"></script>
 </body>
 </html>
