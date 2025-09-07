@@ -17,28 +17,30 @@
 <body>
 <div class="app">
 
-  <!-- DASHBOARD (unchanged baseline) -->
+  <!-- DASHBOARD (baseline) -->
   <section id="dashboard" class="screen active">
     <h2>Dashboard</h2>
-    <!-- whatever your original dashboard markup contains -->
+    <!-- keep your existing dashboard markup here -->
   </section>
 
-  <!-- FOOD LOG (unchanged baseline) -->
+  <!-- FOOD LOG (baseline) -->
   <section id="food-log" class="screen">
     <h2>Food Log</h2>
     <ul id="diaryUL"></ul>
     <button id="open-add" class="fab">+</button>
   </section>
 
-  <!-- STEP 1 ― PROFILE WIZARD -->
+  <!-- PROFILE WIZARD (new) -->
   <section id="profile" class="screen">
     <h2>My Profile</h2>
     <input  id="p-name"   placeholder="Name">
-    <select id="p-gender"><option value="male">Male</option><option value="female">Female</option></select>
+    <select id="p-gender">
+      <option value="male">Male</option><option value="female">Female</option>
+    </select>
     <input  id="p-age"    type="number" placeholder="Age (y)">
     <input  id="p-weight" type="number" placeholder="Weight (kg)">
     <input  id="p-height" type="number" placeholder="Height (cm)">
-    <button id="p-save"   class="btn">Save Profile</button>
+    <button id="p-save" class="btn">Save Profile</button>
     <p id="p-msg" class="hint"></p>
   </section>
 
