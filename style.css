@@ -1,37 +1,33 @@
 :root{
- --pri:#4CAF50;--sec:#2196F3;--text:#212121;--muted:#757575;
+  --pri:#4CAF50; --muted:#777; --text:#222;
 }
-body{margin:0;font-family:Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:#F5F5F5;color:var(--text)}
-h2,h3,h4{margin:0 0 8px}
-.app-container{padding:18px 16px 90px}
-.screen{display:none}
-.screen.active{display:block}
-input,select{width:100%;padding:8px;font-size:1rem;margin:6px 0;border:1px solid #ccc;border-radius:6px}
-.primary-btn{display:block;width:100%;padding:10px 0;margin-top:12px;background:var(--pri);color:#fff;font-weight:600;border:0;border-radius:6px}
-.hint{font-size:.85rem;color:var(--muted)}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,Arial,sans-serif;background:#F5F5F5;color:var(--text)}
+h2,h3,h4{margin:0 0 10px}.hint{font-size:.85rem;color:var(--muted)}
+.app{padding:18px 16px 90px}.screen{display:none}.screen.active{display:block}
+input,select{width:100%;padding:8px;margin:6px 0;border:1px solid #ccc;border-radius:6px;font-size:1rem}
+.btn{display:block;width:100%;padding:10px 0;margin-top:12px;background:var(--pri);color:#fff;border:0;border-radius:6px;font-weight:600}
 .hidden{display:none}
 
-/* footer nav */
-footer{position:fixed;bottom:0;left:0;width:100%;background:#fff;border-top:1px solid #ddd}
-footer nav{display:flex;justify-content:space-around}
-footer button{flex:1;padding:12px 0;font-size:1.2rem;background:none;border:none}
-footer button:active{background:#eee}
+/* bars & ring */
+.bar{height:10px;background:#eee;border-radius:6px;margin-bottom:8px;overflow:hidden;position:relative}
+.bar::after{content:'';display:block;height:100%;background:var(--pri);width:0}
+.ring-wrap{display:flex;justify-content:center;position:relative;margin:14px 0}
+.ring-label{position:absolute;text-align:center;line-height:1.2;font-weight:600}
 
-/* diary list */
-.diary-list{list-style:none;padding:0;margin:0}
-.diary-list li{display:flex;justify-content:space-between;padding:10px;background:#fff;margin-bottom:6px;border-radius:8px}
-.diary-list .edit,.diary-list .del{background:none;border:none;font-size:1rem}
-
-/* ring & bars */
-#rings{display:flex;justify-content:center;align-items:center;margin:14px 0}
-.ring-label{position:absolute;text-align:center;font-weight:600}
-#macro-bars .bar{height:10px;background:#eee;border-radius:6px;overflow:hidden;margin-bottom:8px}
-#macro-bars .bar::after{content:'';display:block;height:100%;background:var(--pri);width:0}
+/* diary */
+.diary{list-style:none;padding:0;margin:0}.diary li{display:flex;justify-content:space-between;background:#fff;padding:10px;margin-bottom:6px;border-radius:8px}
+.diary button{background:none;border:none;font-size:1rem}
 
 /* modal */
-.modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.55);display:flex;justify-content:center;align-items:center;z-index:999}
-.modal-content{background:#fff;padding:20px;border-radius:12px;width:90%;max-width:420px;position:relative}
-.modal-content.wide{max-width:480px}
-.close{position:absolute;top:8px;right:14px;font-size:1.4rem;cursor:pointer}
-.scroll-box{max-height:300px;overflow-y:auto}
-.fab{position:fixed;right:22px;bottom:90px;background:var(--pri);color:#fff;border:none;font-size:2rem;width:48px;height:48px;border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,.4)}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;justify-content:center;align-items:center;z-index:50}
+.modal-box{background:#fff;padding:20px;border-radius:12px;width:90%;max-width:420px;position:relative}
+.modal-box.wide{max-width:480px}.close{position:absolute;top:8px;right:14px;font-size:1.4rem;cursor:pointer}
+.scroll{max-height:260px;overflow-y:auto}
+
+/* FAB */
+.fab{position:fixed;right:22px;bottom:90px;width:48px;height:48px;border-radius:50%;background:var(--pri);color:#fff;font-size:2rem;border:0;box-shadow:0 2px 6px rgba(0,0,0,.4)}
+
+/* footer nav */
+footer{position:fixed;inset-block-end:0;width:100%;background:#fff;border-top:1px solid #ddd}
+footer nav{display:flex}footer button{flex:1;padding:12px 0;font-size:1.2rem;background:none;border:none}
+footer button:active{background:#eee}
