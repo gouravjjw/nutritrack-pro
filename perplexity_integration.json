@@ -1,0 +1,34 @@
+{
+  "search_branded_food": {
+    "prompt_template": "Find detailed nutritional information for {food_name}. Include: calories per serving, protein, carbohydrates, fat, fiber, sugar, and any available micronutrients (vitamins and minerals). Also include serving size, ingredients list, and allergen information if available. Format the response as structured data.",
+    "example_response": {
+      "food_name": "The Whole Truth Whey Concentrate",
+      "serving_size": "30g (1 scoop)",
+      "calories": 115,
+      "macronutrients": {
+        "protein": 24.0,
+        "carbohydrates": 2.5,
+        "fat": 1.2,
+        "fiber": 0.5,
+        "sugar": 1.8
+      },
+      "micronutrients": {
+        "calcium": 120,
+        "iron": 0.5,
+        "magnesium": 25,
+        "phosphorus": 95,
+        "potassium": 180,
+        "sodium": 65,
+        "zinc": 0.8
+      },
+      "ingredients": [
+        "Whey Protein Concentrate",
+        "Natural Flavors",
+        "Stevia Extract"
+      ],
+      "allergens": [
+        "Milk"
+      ]
+    }
+  }
+}
